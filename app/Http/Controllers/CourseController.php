@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Http\Requests\CourseRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CourseController extends Controller
 {
     public function index()
     {
         $courses = Course::with('lessons', 'instructor')->get();
+        Log::info('index', $courses);
         return response()->json($courses);
     }
 
@@ -24,7 +26,7 @@ class CourseController extends Controller
             'description' => $validated['description'],
             'instructor_id' => Auth::id(),
         ]);
-
+        Log::info($course);
         return response()->json([
             'message' => 'Course created successfully',
             'course' => $course,
