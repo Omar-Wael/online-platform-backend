@@ -9,6 +9,12 @@ use App\Models\Course;
 
 class EnrollmentController extends Controller
 {
+    public function index()
+    {
+        $enrollments = Enrollment::where('user_id', Auth::id())->with('course')->get();
+        return response()->json($enrollments);
+    }
+
     public function enroll($courseId)
     {
         $course = Course::findOrFail($courseId);

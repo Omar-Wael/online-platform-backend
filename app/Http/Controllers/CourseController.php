@@ -13,7 +13,7 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::with('lessons', 'instructor')->get();
-        Log::info('index', $courses);
+        Log::info('index', [$courses]);
         return response()->json($courses);
     }
 
@@ -35,7 +35,7 @@ class CourseController extends Controller
 
     public function show($id)
     {
-        $course = Course::with('lessons')->findOrFail($id);
+        $course = Course::with('lessons', 'instructor')->findOrFail($id);
         return response()->json($course);
     }
 

@@ -23,7 +23,7 @@ class CourseFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
-            'user_id' => User::instructor()->first()->id,  // Set the user_id to an instructor
+            'instructor_id' => User::instructor()->first()->id,  // Set the instructor_id to an instructor
         ];
     }
 }

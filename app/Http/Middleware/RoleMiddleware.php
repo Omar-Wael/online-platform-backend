@@ -6,24 +6,27 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RoleMiddleware
 {
-    // /**
-    //  * Handle an incoming request.
-    //  *
-    //  * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-    //  */
-    // public function handle(Request $request, Closure $next): Response
-    // {
-    //     return $next($request);
-    // }
-    public function handle(Request $request, Closure $next, $role)
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle($request, Closure $next, $role)
     {
-        if (Auth::check() && Auth::user()->role === $role) {
-            return $next($request);
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Unauthorized: Token not found or invalid'], 401);
         }
 
-        return response()->json(['error' => 'Unauthorized'], 403);
+        if (!$user || $user->role !== $role) {
+            return response()->json(['message' => 'Forbidden: You do not have the required role'], 403);
+        }
+
+        return $next($request);
     }
 }

@@ -10,6 +10,13 @@ use App\Http\Requests\LessonRequest;
 
 class LessonController extends Controller
 {
+
+    public function index($course_id, $lesson_id)
+    {
+        $lesson = Lesson::findOrFail($lesson_id);
+        return response()->json($lesson);
+    }
+
     public function store(LessonRequest $request, $courseId)
     {
         $course = Course::findOrFail($courseId);

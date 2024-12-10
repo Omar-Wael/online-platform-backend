@@ -10,30 +10,34 @@ use App\Http\Controllers\ReviewController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware('auth:api')->name('user');
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('/profile', [AuthController::class, 'profile']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::middleware('role:instructor')->group(function () {
-        Route::post('/courses', [CourseController::class, 'store']);
-        Route::put('/courses/{course}', [CourseController::class, 'update']);
-        Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
-        Route::post('/courses/{course}/lessons', [LessonController::class, 'store']);
-        Route::put('/lessons/{lesson}', [LessonController::class, 'update']);
-        Route::delete('/lessons/{lesson}', [LessonController::class, 'destroy']);
+        Route::get('/instructor/courses', [CourseController::class, 'index'])->name('instructor.courses.index');
+        Route::post('/courses/create', [CourseController::class, 'store'])->name('courses.store');
+        Route::put('/courses/update/{course}', [CourseController::class, 'update'])->name('courses.update');
+        Route::delete('/courses/delete/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+        Route::post('/courses/{course}/lessons', [LessonController::class, 'store'])->name('lessons.store');
+        Route::put('/lessons/{lesson}', [LessonController::class, 'update'])->name('lessons.update');
+        Route::delete('/lessons/{lesson}', [LessonController::class, 'destroy'])->name('lessons.destroy');
     });
 
     Route::middleware('role:student')->group(function () {
-        Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll']);
-        Route::get('/courses/{course}/progress', [EnrollmentController::class, 'progress']);
-        Route::post('/courses/{course}/review', [ReviewController::class, 'store']);
+        Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
+        Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->name('enroll');
+        Route::get('/courses/{course}/progress', [EnrollmentController::class, 'progress'])->name('progress');
+        Route::post('/courses/{course}/review', [ReviewController::class, 'store'])->name('review.store');
     });
 
-    Route::get('/courses', [CourseController::class, 'index']);
-    Route::get('/courses/{course}', [CourseController::class, 'show']);
+
+    Route::get('/courses/{course}/lessons/{lesson_id}', [LessonController::class, 'index'])->name('lessons.index');
+    Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+    Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
 });

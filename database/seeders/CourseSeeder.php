@@ -16,7 +16,7 @@ class CourseSeeder extends Seeder
     {
         // Ensure you are assigning an instructor user to the course
         Course::factory()->count(10)->create([
-            'user_id' => User::instructor()->first()->id,  // Use the instructor scope
+            'instructor_id' => User::instructor()->first()->id,  // Use the instructor scope
         ]);
     }
 }
